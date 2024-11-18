@@ -1,2 +1,3 @@
 MAX_X = 0
 MAX_Y = 0
+REFRESH_RATE = 0.01

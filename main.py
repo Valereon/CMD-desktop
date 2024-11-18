@@ -27,14 +27,13 @@ def main(stdscr):
 
 
     stdscr.clear()
-    test = Window("Test", 15, 25, True, [])
+    test = Window("Test", 15, 25, True)
     stdscr.nodelay(1)
     while True:
         stdscr.border('|', '|', '-', '-', '+', '+', '+', '+')
         stdscr.refresh()
-        stdscr.addstr(5,5, f"MaxX:{Settings.MAX_X}, MaxY:{Settings.MAX_Y}")
         test.tick()
-        test.window.addstr(1,1, f"MaxX:{test.maxX}, MaxY:{test.maxY}")
+
 
         key = stdscr.getch()
 
@@ -42,7 +41,11 @@ def main(stdscr):
 
 
         if(pressed):
+            test.isBeingHeld = True
             test.move(my, mx)
+        else:
+            test.isBeingHeld = False
+            test.snapToHalf(my, mx)
 
 
         if(key == curses.KEY_MOUSE):        
@@ -58,7 +61,7 @@ def main(stdscr):
         result = InputManager.keyDo(key,stdscr)
         if(result == "break"):
             break
-        time.sleep(0.01)
+        time.sleep(Settings.REFRESH_RATE)
 
 
 
