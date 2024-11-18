@@ -12,7 +12,8 @@ stdscr.keypad(True)
 curses.mousemask(curses.BUTTON1_PRESSED | curses.BUTTON1_RELEASED | curses.BUTTON1_CLICKED | curses.REPORT_MOUSE_POSITION)
 print('\033[?1003h')
 
-
+timeSinceReleased = 0
+released = time.time()
 
 rows, cols = stdscr.getmaxyx()
 
@@ -21,16 +22,19 @@ Settings.MAX_Y = rows
 
 
 def main(stdscr):
+    global released
     mx = 0
     my = 0
     pressed = False
 
 
     stdscr.clear()
-    test = Window("Test", 15, 25, True)
+    test = Window("Test Window", 10, 20, True)
+    
     stdscr.nodelay(1)
     while True:
         stdscr.border('|', '|', '-', '-', '+', '+', '+', '+')
+        #TODO: Refresh a need to basis
         stdscr.refresh()
         test.tick()
 
@@ -41,18 +45,24 @@ def main(stdscr):
 
 
         if(pressed):
-            test.isBeingHeld = True
+            # test.topBorder(my,mx)
+            # if(test.isBeingHeld is True):
             test.move(my, mx)
-        else:
-            test.isBeingHeld = False
-            test.snapToHalf(my, mx)
+            # released = time.time()
+                
+        # else:
+            # timeSinceReleased = time.time()
+            # stdscr.addstr(10,10, str(timeSinceReleased - released))
+            
+            # test.isBeingHeld = False
+            # test.snapToHalf(my, mx, timeSinceReleased)
 
 
         if(key == curses.KEY_MOUSE):        
-            _, mx, my, _, bstate = curses.getmouse()        
-            if(bstate == 2):
+            _, mx, my, _, bstate = curses.getmouse()   
+            if bstate == 2:
                 pressed = True
-            elif(bstate == 1):
+            elif bstate == 1:
                 pressed = False
             
 

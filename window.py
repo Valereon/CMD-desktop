@@ -24,6 +24,7 @@ class Window:
 
     def tick(self):
         self.window.border("|", "|", "-", "-", "+", "+","+","+")
+        # self.topInfo()
         self.window.refresh()
 
     def clear(self):
@@ -34,13 +35,16 @@ class Window:
         self.window.mvwin(newY, newX)
         self.x = newX
         self.y = newY
-
-    #TODO: Implement custom border for the windows
-    def border():
-        pass
         
+    def topInfo(self):
+        self.window.addstr(0,0, self.name)
+        
+    def topBorder(self, my, mx):
+        if(my == self.y + 3):
+            if(mx <= self.x + self.maxX and mx >= self.x):
+                self.isBeingHeld = True
 
-
+        
 
     def checkIfLegal(self, newY, newX):
         #thank you github copilot
@@ -54,17 +58,18 @@ class Window:
             newY = 0
         return newY, newX
         
-    def snapToHalf(self, newY, newX):
+    def snapToHalf(self, newY, newX, timeSinceReleased):
         #TODO: make it so when you unsnap the window it gets smaller like on windows
         #TODO: not nessecary but try and add the windows half opacity before snap so you know what your getting into
         #Snaps when you let go and your mouse is over the border
-        if(not self.isBeingHeld and newX >= Settings.MAX_X - 1):
+        # rightHalfCenterY, rightHalfCenterX = Settings.MAX_Y / 2, (Settings.MAX_X + Settings.MAX_X/2) /2
+        currTime = time.time()
+        if(not self.isBeingHeld and newX >= Settings.MAX_X - 1 and currTime - timeSinceReleased <= .25):
             newY, newX = self.checkIfLegal(newY,newX)
-            # rightHalfCenterY, rightHalfCenterX = Settings.MAX_Y / 2, (Settings.MAX_X + Settings.MAX_X/2) /2
             rightHalfCenterX = (Settings.MAX_X + Settings.MAX_X/2) /2
             self.move(0, int(rightHalfCenterX - self.maxX/2))
 
-            self.maxY = int(Settings.MAX_Y - 2)
+            self.maxY = int(Settings.MAX_Y - 1)
             self.maxX = int(Settings.MAX_X /2)
 
 
