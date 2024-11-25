@@ -29,10 +29,11 @@ class Window:
         self.window.border("|", "|", "-", "-", "+", "+","+","+")
         self.displayWindowTitle()
         self.window.refresh()
-        if(pressed):
-            self.processMoveAndSnap(my, mx)
-            if(self.ifClickedInside(my, mx)):
-                windowManager.focusWindow(self)
+        
+        self.processMoveAndSnap(my, mx, pressed)
+        if(self.ifClickedInside(my, mx) and pressed):
+            windowManager.focusWindow(self)
+            
                 
             
             
@@ -52,7 +53,7 @@ class Window:
         
         if(self.isSnapped):
             self.isSnapped = False
-            self.unsnapResize()
+            self.resizeAfterUnsnap()
             
         
     def displayWindowTitle(self):
@@ -104,23 +105,22 @@ class Window:
             self.isSnapped = True
     
     
-    def processMoveAndSnap(self,my,mx):
+    def processMoveAndSnap(self,my,mx, pressed):
         """validatePosition If the proposed move is possible and do all things releated to the move
         """
 
         result = self.isTopBorder(my,mx,1)
-        if(result):
-            self.moveWindow(my,mx)
-            self.isBeingHeld = True
-            windowManager.isWindowHeld = True
-            self.released = time.time()
+        if(result or (self.isBeingHeld and pressed)):
+            if(windowManager.isWindowHeld == self or windowManager.isWindowHeld is None):
+                self.moveWindow(my,mx)
+                self.isBeingHeld = True
+                windowManager.isWindowHeld = self
+                # self.released = time.time() 
         else:
             self.timeSinceReleased = time.time()
             self.isBeingHeld = False
-            windowManager.isWindowHeld = False
-            self.snapToRightHalf(my,mx, self.timeSinceReleased - self.released)
-            
-            
+            windowManager.isWindowHeld = None
+            self.snapToRightHalf(my,mx, self.timeSinceReleased)
             
             
             
