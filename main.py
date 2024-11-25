@@ -2,60 +2,67 @@ import curses
 from curses import wrapper
 import InputManager
 from window import Window
+from windowManager import windowManager
 import time
 import Settings
+import threading
 
-stdscr = curses.initscr()
-curses.noecho()
-curses.nocbreak()
-stdscr.keypad(True)
-curses.mousemask(curses.BUTTON1_PRESSED | curses.BUTTON1_RELEASED | curses.BUTTON1_CLICKED | curses.REPORT_MOUSE_POSITION)
-print('\033[?1003h')
 
 timeSinceReleased = 0
 released = time.time()
 
-rows, cols = stdscr.getmaxyx()
 
-Settings.MAX_X = cols
-Settings.MAX_Y = rows
+
+def init():
+    stdscr = curses.initscr()
+    
+    stdscr.keypad(True)
+    stdscr.nodelay(1)
+    rows, cols = stdscr.getmaxyx()
+    Settings.MAX_X = cols
+    Settings.MAX_Y = rows
+    
+    curses.noecho()
+    curses.nocbreak()
+    curses.mousemask(curses.ALL_MOUSE_EVENTS | curses.REPORT_MOUSE_POSITION)
+    print('\033[?1003h')
+    
+
+# Function with the timer
+def myTimer(seconds):
+    while True:
+        time.sleep(seconds)
+        curses.flushinp()
 
 
 def main(stdscr):
     global released
-    mx = 0
     my = 0
+    mx = 0
     pressed = False
-
+    
 
     stdscr.clear()
-    test = Window("Test Window", 10, 20, True)
     
-    stdscr.nodelay(1)
+
+    test = Window("Test Window", 15, 20, True)
+    test2 = Window("I Love Testing Windows", 10, 30, True)
+    windowManager.addWindow(test)
+    windowManager.addWindow(test2)
+
+    
+    myThread = threading.Thread(target=myTimer, args=(Settings.FLUSH_INPUT_INTERVAL,))
+    myThread.start()
+    
     while True:
         stdscr.border('|', '|', '-', '-', '+', '+', '+', '+')
-        #TODO: Refresh a need to basis
+        # TODO: Refresh on a need to basis
         stdscr.refresh()
-        test.tick()
+        windowManager.update(my, mx, pressed, timeSinceReleased)
+        # test.tick()
 
 
         key = stdscr.getch()
-
-
-
-
-        if(pressed):
-            # test.topBorder(my,mx)
-            # if(test.isBeingHeld is True):
-            test.move(my, mx)
-            # released = time.time()
-                
-        # else:
-            # timeSinceReleased = time.time()
-            # stdscr.addstr(10,10, str(timeSinceReleased - released))
-            
-            # test.isBeingHeld = False
-            # test.snapToHalf(my, mx, timeSinceReleased)
 
 
         if(key == curses.KEY_MOUSE):        
@@ -64,10 +71,24 @@ def main(stdscr):
                 pressed = True
             elif bstate == 1:
                 pressed = False
-            
 
 
-            
+        # get the window object if it is pressed on without looping?
+        # Im thinking a way to get through this without programming all the windows is to give each objects "tick"
+        # everything it needs to know like tick(my,mx,pressed,time) and have it do all its own proccesing for minimal
+        # work in the main loop
+        # if(pressed):
+        #     result = test.isRightBorder(my,mx)
+        #     if(result is True):
+        #         test.move(my, mx)
+        #         released = time.time()
+        #         stdscr.clear()
+        # else:
+        #     timeSinceReleased = time.time()
+        #     test.isBeingHeld = False
+        #     test.snapToHalf(my, mx, timeSinceReleased)
+
+
         result = InputManager.keyDo(key,stdscr)
         if(result == "break"):
             break
@@ -77,18 +98,8 @@ def main(stdscr):
 
 
 
-
+init()
 wrapper(main)
 
 
 
-
-
-
-
-
-def endWindow():
-    curses.nocbreak()
-    stdscr.keypad(False)
-    curses.echo()
-    curses.endwin()
