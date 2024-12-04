@@ -1,11 +1,11 @@
 import curses
 from curses import wrapper
-import InputManager
-from window import Window
-from windowManager import windowManager
+import Settings.InputManager as InputManager
+from Windows.window import Window
+from Windows.windowManager import windowManager
 import time
-import Settings
-import threading
+import Settings.Settings as Settings
+# import threading
 
 
 timeSinceReleased = 0
@@ -28,12 +28,6 @@ def init():
     print('\033[?1003h')
     
 
-# Function with the timer
-def myTimer(seconds):
-    while True:
-        time.sleep(seconds)
-        curses.flushinp()
-
 
 def main(stdscr):
     global released
@@ -51,12 +45,10 @@ def main(stdscr):
     windowManager.addWindow(test2)
 
     
-    myThread = threading.Thread(target=myTimer, args=(Settings.FLUSH_INPUT_INTERVAL,))
-    myThread.start()
-    
     while True:
         stdscr.border('|', '|', '-', '-', '+', '+', '+', '+')
         # TODO: Refresh on a need to basis
+        # i dont think its entierly necessary to refresh on a need to basis it doesnt seem to be impacting performance
         stdscr.refresh()
         windowManager.update(my, mx, pressed, timeSinceReleased)
         # test.tick()
@@ -71,23 +63,6 @@ def main(stdscr):
                 pressed = True
             elif bstate == 1:
                 pressed = False
-
-
-        # get the window object if it is pressed on without looping?
-        # Im thinking a way to get through this without programming all the windows is to give each objects "tick"
-        # everything it needs to know like tick(my,mx,pressed,time) and have it do all its own proccesing for minimal
-        # work in the main loop
-        # if(pressed):
-        #     result = test.isRightBorder(my,mx)
-        #     if(result is True):
-        #         test.move(my, mx)
-        #         released = time.time()
-        #         stdscr.clear()
-        # else:
-        #     timeSinceReleased = time.time()
-        #     test.isBeingHeld = False
-        #     test.snapToHalf(my, mx, timeSinceReleased)
-
 
         result = InputManager.keyDo(key,stdscr)
         if(result == "break"):

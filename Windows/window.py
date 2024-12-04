@@ -1,8 +1,8 @@
 import curses
-import Settings
+import Settings.Settings as Settings
 import time
 import math
-from windowManager import windowManager
+from Windows.windowManager import windowManager
 
 class Window:
     def __init__(self, name: str, sizeY: int, sizeX: int, resize: bool):
