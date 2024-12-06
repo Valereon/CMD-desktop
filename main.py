@@ -5,8 +5,7 @@ from Windows.window import Window
 from Windows.windowManager import windowManager
 import time
 import Settings.Settings as Settings
-# import threading
-
+from Windows.icon import Icon
 
 timeSinceReleased = 0
 released = time.time()
@@ -41,6 +40,7 @@ def main(stdscr):
 
     test = Window("Test Window", 15, 20, True)
     test2 = Window("I Love Testing Windows", 10, 30, True)
+    icon1 = Icon("Term", stdscr)
     windowManager.addWindow(test)
     windowManager.addWindow(test2)
 
@@ -50,8 +50,8 @@ def main(stdscr):
         # TODO: Refresh on a need to basis
         # i dont think its entierly necessary to refresh on a need to basis it doesnt seem to be impacting performance
         stdscr.refresh()
+        icon1.displayIcon()
         windowManager.update(my, mx, pressed, timeSinceReleased)
-        # test.tick()
 
 
         key = stdscr.getch()
@@ -63,6 +63,9 @@ def main(stdscr):
                 pressed = True
             elif bstate == 1:
                 pressed = False
+            elif bstate & curses.BUTTON1_DOUBLE_CLICKED:
+                if(my == 5 and mx==5):
+                    icon1.openProgam()
 
         result = InputManager.keyDo(key,stdscr)
         if(result == "break"):

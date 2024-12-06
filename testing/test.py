@@ -30,6 +30,8 @@ def main(stdscr):
                 
             elif bstate & curses.BUTTON1_RELEASED:
                 button_held = False
+            elif bstate & curses.BUTTON1_DOUBLE_CLICKED:
+                pass
 
         # Exit the loop if any key is pressed other than mouse events
         if key != -1 and key != curses.KEY_MOUSE:

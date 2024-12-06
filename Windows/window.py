@@ -3,23 +3,20 @@ import Settings.Settings as Settings
 import time
 import math
 from Windows.windowManager import windowManager
+from entity import Entity
 
-class Window:
+class Window(Entity):
     def __init__(self, name: str, sizeY: int, sizeX: int, resize: bool):
-        self.name = name
         # self.id = 1  # TODO: make an id system to assign unique ids
         self.sizeX = sizeX
         self.sizeY = sizeY
-        self.x = 0
-        self.y = 0
-        self.maxY = 0
-        self.maxX = 0
         self.isBeingHeld = False
         self.isSnapped = False
         self.resizable = resize
         self.released = 0
         self.timeSinceReleased = 0
         self.setup()
+        super().__init__(name, self.maxX, self.maxY)
 
     def setup(self):
         self.window = curses.newwin(self.sizeY, self.sizeX, 1, 1)
@@ -34,27 +31,17 @@ class Window:
         if(self.ifClickedInside(my, mx) and pressed):
             windowManager.focusWindow(self)
             
-                
-            
-            
-            
 
     def clear(self):
         self.window.clear()
 
-
-
-
-    def moveWindow(self, newY, newX):
-        newY, newX = self.validatePosition(newY,newX)
-        self.window.mvwin(int(newY), int(newX))
-        self.x = newX
-        self.y = newY
-        
+    def move(self):
+        self.window.mvwin(self.y, self.x)
         if(self.isSnapped):
             self.isSnapped = False
             self.resizeAfterUnsnap()
-            
+
+
         
     def displayWindowTitle(self):
         self.window.addstr(0,0, self.name)
@@ -64,20 +51,7 @@ class Window:
             if(mx <= self.x + self.maxX and mx >= self.x):
                 return True
         return False
-        
-
-    def validatePosition(self, newY, newX):
-        #thank you github copilot
-        if newX + self.maxX > Settings.MAX_X:
-            newX = Settings.MAX_X - self.maxX
-        if newY + self.maxY > Settings.MAX_Y:
-            newY = Settings.MAX_Y - self.maxY
-        if newX < 0:
-            newX = 0
-        if newY < 0:
-            newY = 0
-        return newY, newX
-        
+    
     def resizeAfterUnsnap(self):
         self.maxX *= .5
         self.maxY *= .5
@@ -94,7 +68,8 @@ class Window:
         if(not self.isBeingHeld and newX >= Settings.MAX_X - 1 and currTime - timeSinceReleased <= Settings.RELEASE_SNAPBUFFER):
             newY, newX = self.validatePosition(newY,newX)
             rightHalfCenterX = (Settings.MAX_X + Settings.MAX_X/2) / 2
-            self.moveWindow(1, int(rightHalfCenterX - self.maxX/2))
+            self.moveEntity(1, int(rightHalfCenterX - self.maxX/2))
+            self.move()
 
             self.maxY = int(Settings.MAX_Y - 1)
             self.maxX = int(Settings.MAX_X /2)
@@ -112,7 +87,8 @@ class Window:
         result = self.isTopBorder(my,mx,1)
         if(result or (self.isBeingHeld and pressed)):
             if(windowManager.isWindowHeld == self or windowManager.isWindowHeld is None):
-                self.moveWindow(my,mx)
+                self.moveEntity(my,mx)
+                self.move()
                 self.isBeingHeld = True
                 windowManager.isWindowHeld = self
                 # self.released = time.time() 

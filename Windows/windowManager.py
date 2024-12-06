@@ -4,8 +4,9 @@ class WindowManager():
         
         self.focusedWindow = None # the window which will take highest prioty and is in focus and ticking
         self.activeWindows = [] #windows that are not in focus but still ticking
-        self.unfocusedWindows = [] # windows that are not in focus
+        self.unfocusedWindows = [] # windows that are not in focus and not ticking
         self.minimizedWindows = [] # windows that are minimized and not ticking 
+        
     
     def update(self, my, mx, pressed, timeSinceReleased):
         for i in self.activeWindows:
@@ -29,6 +30,7 @@ class WindowManager():
             self.activeWindows.remove(window)
         if(self.minimizedWindows.__contains__(window)):
             self.minimizedWindows.remove(window)
+
     
     def minimize():
         pass
