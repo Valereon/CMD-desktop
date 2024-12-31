@@ -7,8 +7,12 @@ import time
 import Settings.Settings as Settings
 from Windows.icon import Icon
 
+
+
+
 timeSinceReleased = 0
 released = time.time()
+
 
 
 
@@ -37,13 +41,7 @@ def main(stdscr):
 
     stdscr.clear()
     
-
-    test = Window("Test Window", 15, 20, True)
-    test2 = Window("I Love Testing Windows", 10, 30, True)
     icon1 = Icon("Term", stdscr)
-    windowManager.addWindow(test)
-    windowManager.addWindow(test2)
-
     
     while True:
         stdscr.border('|', '|', '-', '-', '+', '+', '+', '+')
@@ -59,9 +57,9 @@ def main(stdscr):
 
         if(key == curses.KEY_MOUSE):        
             _, mx, my, _, bstate = curses.getmouse()   
-            if bstate == 2:
+            if bstate & curses.BUTTON1_PRESSED:
                 pressed = True
-            elif bstate == 1:
+            elif bstate  & curses.BUTTON1_RELEASED:
                 pressed = False
             elif bstate & curses.BUTTON1_DOUBLE_CLICKED:
                 if(my == 5 and mx==5):
