@@ -1,7 +1,13 @@
 import curses
 import time
+from pynput import mouse
+
+
+mousePressed = False
+
 
 def main(stdscr):
+    global mousePressed
     # Initial setup
     curses.curs_set(0)  # Hide the cursor
     stdscr.nodelay(1)   # Non-blocking mode
@@ -16,7 +22,7 @@ def main(stdscr):
         stdscr.clear()
         stdscr.addstr(0, 0, "Hold down left mouse button and move the mouse.")
         stdscr.addstr(1, 0, f"Mouse position: X={mx}, Y={my}")
-        stdscr.addstr(2, 0, f"Button held: {button_held}")
+        stdscr.addstr(2, 0, f"Button held: {mousePressed}")
 
         # Check for mouse or keyboard events
         key = stdscr.getch()
@@ -41,4 +47,16 @@ def main(stdscr):
         time.sleep(0.01)  # Small delay for smoother refresh
 
 # Start the curses application
-curses.wrapper(main)
+
+ 
+ 
+def on_click(x, y, button, pressed):
+    global mousePressed
+    mousePressed = pressed
+        
+ 
+ 
+ 
+with mouse.Listener(on_click=on_click) as listener:
+    curses.wrapper(main)
+    

@@ -9,10 +9,10 @@ class Entity():
         self.maxX = maxX
         self.maxY = maxY
     
-    def moveEntity(self, newY, newX):
-        newY, newX = self.validatePosition(newY,newX)
-        self.x = newX
-        self.y = newY
+    # def moveEntity(self, newY, newX):
+    #     newY, newX = self.validatePosition(newY,newX)
+    #     self.x = newX
+    #     self.y = newY
         
     def validatePosition(self, newY, newX):
         #thank you github copilot
