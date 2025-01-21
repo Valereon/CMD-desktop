@@ -45,7 +45,7 @@ def main(stdscr):
         # TODO: Refresh on a need to basis
         # i dont think its entierly necessary to refresh on a need to basis it doesnt seem to be impacting performance
         key = stdscr.getch() # this is the issue with the flickering bc moving the mouse calls a refresh
-        stdscr.erase()
+        stdscr.clear()
         icon1.displayIcon()
         windowManager.update(my, mx, pressed)
 

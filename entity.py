@@ -8,14 +8,9 @@ class Entity():
         self.y = 0
         self.maxX = maxX
         self.maxY = maxY
-    
-    # def moveEntity(self, newY, newX):
-    #     newY, newX = self.validatePosition(newY,newX)
-    #     self.x = newX
-    #     self.y = newY
         
     def validatePosition(self, newY, newX):
-        #thank you github copilot
+        """Turns any invalid position into a valid position"""
         if newX + self.maxX > Settings.MAX_X:
             newX = Settings.MAX_X - self.maxX
         if newY + self.maxY > Settings.MAX_Y:
