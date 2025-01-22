@@ -30,22 +30,22 @@ class Window(Entity):
         super().__init__(name, self.maxX, self.maxY)
 
     def updateWindow(self, my, mx, pressed):
-        """This is the windows tick updates every Settings.REFRESH_RATE"""
+        """This is the windows ticks an update every Settings.REFRESH_RATE"""
         self.window.border("|", "|", "-", "-", "+", "+","+","+")
         # self.displayWindowTitle()
         self.window.refresh()
         self.ceilCoordsNScale()
 
-
         if(self.isTopBorder(my,mx,1) or self.isBeingHeld):
             self.checkAndMove(my,mx,pressed)
         
         if(self.isRightBorder(my,mx,1) or self.isBeingResized):
-            self.resizeWindow(self.maxY,mx + self.maxX, pressed)  # for some reason there is a weird scaling offset idk what causes it or how to fix it
+            self.resizeWindow(self.maxY,mx + self.maxX -12, pressed)  # for some reason there is a weird scaling offset idk what causes it or how to fix it
             self.window.erase()
             
         if(self.ifClickedInside(my, mx) and pressed):
             windowManager.focusWindow(self)
+            
 
     def ceilCoordsNScale(self):
         """Math.ceils the coordinates and scale because of math producing floating points and curses cannot handle floating point scale and position
@@ -119,6 +119,7 @@ class Window(Entity):
             windowManager.isWindowHeld = self
 
     def resizeWindow(self, newY, newX, pressed):
+        # BUG: when resizing an issue occurs that after the first resize, it seems to snap back to the orignal when you start resizing again i belive this is due to the math being applied to newX in the call of this method
         if(pressed or (self.isBeingResized and pressed)):
             newY, newX = self.checkIfMinSize(newY,newX)
             self.window.resize(newY, newX)
