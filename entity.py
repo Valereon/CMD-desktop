@@ -2,6 +2,7 @@ import Settings.Settings as Settings
 
 
 class Entity():
+    """this is the base class for a lot of objects for the reason of shared methods and easy extendability"""
     def __init__(self, name, maxX, maxY) -> None:
         self.name = name
         self.x = 0
@@ -20,3 +21,30 @@ class Entity():
         if newY < 0:
             newY = 0
         return newY, newX
+
+    def isTopBorder(self, my, mx, margin=0):
+        if(my <= self.y + margin and my >= self.y):
+            if(mx <= self.x + self.maxX and mx >= self.x):
+                return True
+            
+    def isBottomBorder(self, my, mx, margin=0):
+        if my <= self.y + self.maxY + margin and my >= self.y + self.maxY:
+            if mx <= self.x + self.maxX and mx >= self.x:
+                return True
+        return False
+
+    def isRightBorder(self, my, mx, margin=0):
+        if(my <= self.y + self.maxY and my >= self.y):
+            if(mx <= self.x + self.maxX + margin and mx >= self.x + self.maxX):
+                return True
+            
+    def isLeftBorder(self, my, mx, margin=0):
+        if(my <= self.y + self.maxY and my >= self.y):
+            if(mx <= self.x + margin and mx >= self.x):
+                return True
+
+    def isPointInside(self, my,mx):
+        if(my <= self.y + self.maxY and my >= self.y):
+            if(mx <= self.x + self.maxX and mx >= self.x):
+                return True
+        return False

@@ -3,19 +3,19 @@ import time
 
 from pynput import mouse
 
-from Settings import InputManager, Settings
-from Windows.icon import Icon
 from Windows.windowManager import windowManager
+from Settings import InputManager, Settings
+from Windows.desktop import desktop
+from Windows.icon import Icon
+from Settings import GlobalVars as GV
 
 timeSinceReleased = 0
 released = time.time()
-pressed = False
 
 
 
 def init():
     stdscr = curses.initscr()
-
     stdscr.keypad(True)
     stdscr.nodelay(1)
     rows, cols = stdscr.getmaxyx()
@@ -32,31 +32,33 @@ def init():
 
 def main(stdscr):
     global pressed, released
-    my = 0
-    mx = 0
 
 
     stdscr.erase()
 
-    icon1 = Icon("Term", stdscr)
+    icon1 = Icon("Term", stdscr, 10, 10)
+    desktop.icons.append(icon1)
 
     while True:
         stdscr.border("|", "|", "-", "-", "+", "+", "+", "+")
         # TODO: Refresh on a need to basis
-        # i dont think its entierly necessary to refresh on a need to basis it doesnt seem to be impacting performance
-        key = stdscr.getch() # this is the issue with the flickering bc moving the mouse calls a refresh
+        # i dont think its entirely necessary to refresh on a need to basis it doesn't seem to be impacting performance
+        key = stdscr.getch() # this is the issue with the flickering bc moving the mouse calls a refresh i think
         stdscr.clear()
         icon1.displayIcon()
-        windowManager.update(my, mx, pressed)
+        windowManager.update()
 
+        #TODO: this checks all of the icons every frame, i dont actually know how inefficient this is oh well
+        desktop.checkIcons()
 
 
 
         if(key == curses.KEY_MOUSE):
-            _, mx, my, _, bstate = curses.getmouse()
-            if bstate & curses.BUTTON1_DOUBLE_CLICKED:
-                if(my == 5 and mx==5):
-                    icon1.openProgam()
+            _, GV.mouseX, GV.mouseY, _, GV.cursesBstate = curses.getmouse()
+            if GV.cursesBstate & curses.BUTTON1_DOUBLE_CLICKED:
+                if(windowManager.focusedWindow is None):
+                    pass
+
 
         result = InputManager.keyDo(key,stdscr)
         if(result == "break"):
@@ -72,8 +74,7 @@ init()
 
 
 def on_click(x, y, button, isPressed):
-    global pressed
-    pressed = isPressed
+    GV.isMousePressed = isPressed
 
 
 

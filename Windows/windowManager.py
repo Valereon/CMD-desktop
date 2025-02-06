@@ -1,3 +1,6 @@
+from Settings import GlobalVars as GV
+
+
 class WindowManager:
     def __init__(self):
         self.isWindowHeld = False
@@ -8,11 +11,11 @@ class WindowManager:
         self.minimizedWindows = [] # windows that are minimized and not ticking
 
 
-    def update(self, my, mx, pressed):
+    def update(self):
         for i in self.activeWindows:
-            i.updateWindow(my, mx, pressed)
+            i.update(GV.mouseY, GV.mouseX, GV.isMousePressed)
         if(self.focusedWindow is not None):
-            self.focusedWindow.updateWindow(my, mx, pressed)
+            self.focusedWindow.update(GV.mouseY, GV.mouseX, GV.isMousePressed)
 
 
     def focusWindow(self, window):

@@ -8,7 +8,10 @@ from Windows.windowManager import windowManager
 
 
 class Window(Entity):
-    """The window class for all windows, they can be resized moved minimized and maximized as you would expect from a window"""
+    """The window class for all windows, they can be resized moved minimized and maximized as you would expect from a window
+    
+    
+    when you inherit this class, your custom class will not update unless you set the self.updateMethod var to one of your own methods this update happens after all of the window logic"""
     def __init__(self, name: str, sizeY: int, sizeX: int, resize: bool):
         #self.id = 1  # TODO: make an id system to assign unique ids  # noqa: ERA001
         self.sizeY = sizeY
@@ -26,10 +29,12 @@ class Window(Entity):
 
         self.window = curses.newwin(self.sizeY, self.sizeX, 1, 1)
         self.maxY, self.maxX = self.window.getmaxyx()
+        
+        self.updateMethod = None
 
         super().__init__(name, self.maxX, self.maxY)
 
-    def updateWindow(self, my, mx, pressed):
+    def update(self, my, mx, pressed):
         """This is the windows ticks an update every Settings.REFRESH_RATE"""
         self.window.border("|", "|", "-", "-", "+", "+","+","+")
         # self.displayWindowTitle()
@@ -40,11 +45,14 @@ class Window(Entity):
             self.checkAndMove(my,mx,pressed)
         
         if(self.isRightBorder(my,mx,1) or self.isBeingResized):
-            self.resizeWindow(self.maxY,mx + self.maxX -12, pressed)  # for some reason there is a weird scaling offset idk what causes it or how to fix it
+            self.resizeWindow(self.maxY,mx + self.maxX -12, pressed)
             self.window.erase()
             
-        if(self.ifClickedInside(my, mx) and pressed):
+        if(self.isPointInside(my, mx) and pressed):
             windowManager.focusWindow(self)
+        
+        if(self.updateMethod != None):
+            self.updateMethod()    
             
 
     def ceilCoordsNScale(self):
@@ -145,6 +153,7 @@ class Window(Entity):
             self.snapToRightHalf(my,mx, self.timeSinceReleased)
 
     def checkIfMinSize(self, sizeY, sizeX):
+        """Checks if its below the minimum size as defined in Settings.MIN_WINDOW_X and Y and if it is it will return the min size"""
         if(sizeY < Settings.MIN_WINDOW_Y):
             sizeY = Settings.MIN_WINDOW_Y
         if(sizeX < Settings.MIN_WINDOW_X):
@@ -152,23 +161,3 @@ class Window(Entity):
         return sizeY, sizeX
             
 
-    def isTopBorder(self, my, mx, margin=0):
-        if(my <= self.y + margin and my >= self.y):
-            if(mx <= self.x + self.maxX and mx >= self.x):
-                return True
-
-    def isRightBorder(self, my, mx, margin=0):
-        if(my <= self.y + self.maxY and my >= self.y):
-            if(mx <= self.x + self.maxX + margin and mx >= self.x + self.maxX):
-                return True
-            
-    def isLeftBorder(self, my, mx, margin=0):
-        if(my <= self.y + self.maxY and my >= self.y):
-            if(mx <= self.x + margin and mx >= self.x):
-                return True
-
-    def ifClickedInside(self, my,mx):
-        if(my <= self.y + self.maxY and my >= self.y):
-            if(mx <= self.x + self.maxX and mx >= self.x):
-                return True
-        return False
