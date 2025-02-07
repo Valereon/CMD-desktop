@@ -7,6 +7,7 @@ from Windows.windowManager import windowManager
 from Settings import InputManager, Settings
 from Windows.desktop import desktop
 from Windows.icon import Icon
+from Windows.contextMenu import ContextMenu
 from Settings import GlobalVars as GV
 
 timeSinceReleased = 0
@@ -18,10 +19,11 @@ def init():
     stdscr = curses.initscr()
     stdscr.keypad(True)
     stdscr.nodelay(1)
+    stdscr.idcok(False)
+    stdscr.idlok(False)
     rows, cols = stdscr.getmaxyx()
     Settings.MAX_X = cols
     Settings.MAX_Y = rows
-
     curses.noecho()
     curses.curs_set(0)
     curses.nocbreak()
@@ -36,33 +38,45 @@ def main(stdscr):
 
     stdscr.erase()
 
-    icon1 = Icon("Term", stdscr, 10, 10)
+    icon1 = Icon("Term", stdscr, 11, 10)
+    icon2 = Icon("Term", stdscr, 11, 20)
+    icon3 = Icon("Term", stdscr, 11, 12)
+    icon4 = Icon("Term", stdscr, 15, 13)
+    icon5 = Icon("Term", stdscr, 10, 14)
+    
     desktop.icons.append(icon1)
-
+    desktop.icons.append(icon2)
+    desktop.icons.append(icon3)
+    desktop.icons.append(icon4)
+    desktop.icons.append(icon5)
+    
+    menu = ContextMenu("Blah",20, 20, 20)
+    
     while True:
-        stdscr.border("|", "|", "-", "-", "+", "+", "+", "+")
+        # stdscr.border("|", "|", "-", "-", "+", "+", "+", "+")
         # TODO: Refresh on a need to basis
         # i dont think its entirely necessary to refresh on a need to basis it doesn't seem to be impacting performance
         key = stdscr.getch() # this is the issue with the flickering bc moving the mouse calls a refresh i think
-        stdscr.clear()
-        icon1.displayIcon()
-        windowManager.update()
-
-        #TODO: this checks all of the icons every frame, i dont actually know how inefficient this is oh well
-        desktop.checkIcons()
-
+        stdscr.erase()
+        desktop.update()
+        menu.update()
+        # windowManager.update()
+        stdscr.noutrefresh()
+        
+        curses.doupdate()
 
 
         if(key == curses.KEY_MOUSE):
-            _, GV.mouseX, GV.mouseY, _, GV.cursesBstate = curses.getmouse()
-            if GV.cursesBstate & curses.BUTTON1_DOUBLE_CLICKED:
-                if(windowManager.focusedWindow is None):
-                    pass
-
+            _, GV.mouseX, GV.mouseY, _, GV.cursesBState = curses.getmouse()
+            if GV.cursesBState & curses.BUTTON1_DOUBLE_CLICKED:
+                GV.wasDoubleClicked = True
+            else:
+                GV.wasDoubleClicked = False
 
         result = InputManager.keyDo(key,stdscr)
         if(result == "break"):
             break
+
         time.sleep(Settings.REFRESH_RATE)
 
 

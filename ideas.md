@@ -10,3 +10,7 @@ maybe a ms paint like application pretty much would only be pixel art
 
 
 an event system seems highly worth implementing
+
+
+
+https://gist.github.com/76creates/557aadfb265eedc4f8c90ceee8f6096b

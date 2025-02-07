@@ -11,7 +11,7 @@ class Window(Entity):
     """The window class for all windows, they can be resized moved minimized and maximized as you would expect from a window
     
     
-    when you inherit this class, your custom class will not update unless you set the self.updateMethod var to one of your own methods this update happens after all of the window logic"""
+    when you inherit this class, your custom class will not update unless you set the self.updateMethod var to one of your own methods. This update happens after all of the window logic"""
     def __init__(self, name: str, sizeY: int, sizeX: int, resize: bool):
         #self.id = 1  # TODO: make an id system to assign unique ids  # noqa: ERA001
         self.sizeY = sizeY
@@ -68,7 +68,7 @@ class Window(Entity):
         self.x = mx
 
     def clear(self):
-        self.window.clear()
+        self.window.erase()
 
     def displayWindowTitle(self):
         self.window.addstr(0,0, self.name)
@@ -107,7 +107,7 @@ class Window(Entity):
 
 
             self.window.resize(self.maxY, self.maxX)
-            self.clear()
+            self.erase()
             self.isSnapped = True
 
 

@@ -5,9 +5,13 @@ from Settings import GlobalVars as GV
 class Desktop:
     def __init__(self):
         self.icons = []
+        self.isIconHeld = False
+        self.currentHeldIcon = None
     
     def update(self):
-        pass
+        for i in self.icons:
+            i.displayIcon()
+        self.checkIcons()
     
     
     def checkIcons(self):

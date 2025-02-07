@@ -4,6 +4,7 @@ from entity import Entity
 from Settings import Settings
 from Windows.windowManager import windowManager
 from Settings import GlobalVars as GV
+from Windows.desktop import desktop
 
 
 class Icon(Entity):
@@ -18,17 +19,27 @@ class Icon(Entity):
         self.maxX = len(self.iconText[0])
         self.maxY = len(self.iconText)
         super().__init__(name, self.maxX, self.maxY)
-        self.x = 5
-        self.y = 5
+        self.x = x
+        self.y = y
         self.displayAttribute = curses.A_NORMAL
 
 
     def update(self):
         """IS ONLY CALLED IF ICON IS HOVERED"""
         # FIXME: This is a cooked way to do it but whatever
-        if(self.displayAttribute == curses.A_BOLD):
-            self.isClicked()
-            
+        if(not self.displayAttribute == curses.A_BOLD):
+            return
+        
+        self.isClicked()
+        if(GV.isMousePressed):
+            if(desktop.isIconHeld == False or desktop.currentHeldIcon == self):
+                desktop.isIconHeld = True
+                desktop.currentHeldIcon = self
+                self.moveIcon()
+        else:
+            desktop.isIconHeld = False
+            desktop.currentHeldIcon = None
+        
 
 
     def openProgram(self):
@@ -41,16 +52,16 @@ class Icon(Entity):
             return
         self.displayAttribute = curses.A_BOLD
         
-        
     
     def isClicked(self):
-        if(self.isPointInside(GV.mouseY,GV.mouseX) and doubleclicked):
-            raise("FUCK")
-            # self.openProgram()
+        if(self.isPointInside(GV.mouseY,GV.mouseX) and GV.wasDoubleClicked):
+            self.openProgram()
 
-    def moveIcon(self, y, x):
+    def moveIcon(self):
         #TODO: Implement this
-        self.win.clear()
+        self.y, self.x = self.validatePosition(GV.mouseY, GV.mouseX)
+        
+        # self.win.clear()
 
 
     def displayIcon(self):
