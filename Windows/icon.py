@@ -31,7 +31,7 @@ class Icon(Entity):
             return
         
         self.isClicked()
-        if(GV.isMousePressed):
+        if(GV.isMouse0Pressed):
             if(desktop.isIconHeld == False or desktop.currentHeldIcon == self):
                 desktop.isIconHeld = True
                 desktop.currentHeldIcon = self
@@ -58,10 +58,7 @@ class Icon(Entity):
             self.openProgram()
 
     def moveIcon(self):
-        #TODO: Implement this
         self.y, self.x = self.validatePosition(GV.mouseY, GV.mouseX)
-        
-        # self.win.clear()
 
 
     def displayIcon(self):

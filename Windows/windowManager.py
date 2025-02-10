@@ -13,9 +13,9 @@ class WindowManager:
 
     def update(self):
         for i in self.activeWindows:
-            i.update(GV.mouseY, GV.mouseX, GV.isMousePressed)
+            i.update(GV.mouseY, GV.mouseX, GV.isMouse0Pressed)
         if(self.focusedWindow is not None):
-            self.focusedWindow.update(GV.mouseY, GV.mouseX, GV.isMousePressed)
+            self.focusedWindow.update(GV.mouseY, GV.mouseX, GV.isMouse0Pressed)
 
 
     def focusWindow(self, window):

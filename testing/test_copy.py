@@ -7,6 +7,8 @@ def main(stdscr):
     stdscr.nodelay(1)   # Non-blocking mode
     curses.mousemask(curses.ALL_MOUSE_EVENTS | curses.REPORT_MOUSE_POSITION)
     print('\033[?1003h')
+    
+    wahh = curses.newwin(10,10,10,10)
 
     # Tracking mouse position and button state
     mx, my = 0, 0
@@ -17,7 +19,10 @@ def main(stdscr):
         stdscr.addstr(0, 0, "Hold down left mouse button and move the mouse.")
         stdscr.addstr(1, 0, f"Mouse position: X={mx}, Y={my}")
         stdscr.addstr(2, 0, f"Button held: {button_held}")
-
+        
+        wahh.border("|", "|", "-", "-", "+", "+", "+", "+")
+        stdscr.refresh()
+        wahh.refresh()
         # Check for mouse or keyboard events
         key = stdscr.getch()
 
@@ -37,7 +42,6 @@ def main(stdscr):
         if key != -1 and key != curses.KEY_MOUSE:
             break
 
-        stdscr.refresh()
         time.sleep(0.01)  # Small delay for smoother refresh
 
 # Start the curses application

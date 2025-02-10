@@ -13,45 +13,56 @@
 import curses
 import time
 from Settings import Settings
-class ContextMenu():
-    def __init__(self, menuText, width, height, colAmount):
-        self.menuText = menuText
+from Utils.button import Button
+from entity import Entity
+
+
+class ContextMenu(Entity):
+    def __init__(self, menuOptions, width, height, colAmount):
+        """
+            (Button) Menu Options: The options you want for your menu
+            (int) width: width of the menu
+            (int) height: height of the menu
+            (int) colAmount: how many columns long is the menu
+            (Internal) Style: havent implemented but will be different border types for the menu
+        """
+        # self.menuText = menuText
         self.width = width
         self.height = height
         self.colAmount = colAmount
         self.style = None
-        self.menuOptions = ["New Folder", "New Txt File", "New bull","ergreg","new new"] # this is so you can call methods i guess probably have a return call from a method
-        self.needsRedraw = True
-        
+        self.menuOptions = menuOptions
         self.window = curses.newwin(self.height, self.width, 5, 5)
         self.maxY, self.maxX = self.window.getmaxyx()
-        self.window.nodelay(1)
-        self.window.keypad(True)
+        super().__init__("",self.maxX,self.maxY)
+        self.setButtons()
     
     def update(self):
-        if self.needsRedraw:
-            self.window.erase()
-            self.window.border("|", "|", "-", "-", "+", "+","+","+")
-            self.display()
-            self.window.noutrefresh()
-            self.needsRedraw = False
-        
-        
+        self.window.erase()
+        self.window.border("|", "|", "-", "-", "+", "+","+","+")
+        self.display()
+        self.window.noutrefresh()
     
+    
+    def setButtons(self):
+        for i in range(len(self.menuOptions)):
+            self.menuOptions[i].setGlobalYX(5,5)
+        
     
     
     def display(self):
-    # Exclude top and bottom border from available drawing space
         inner_height = self.height - 2
         segment = inner_height / self.colAmount
         for index in range(self.colAmount):
             vertical_position = 1 + int((index + 0.5) * segment)
-            for x in range(0, self.maxX - 1):
+            # Start horizontal line from column 1 to preserve left border
+            for x in range(1, self.maxX - 1):
                 self.window.addstr(vertical_position, x, "-")
-            if index < len(self.menuOptions):
-                self.window.addstr(vertical_position, 1, self.menuOptions[index])
 
-
-        
-
-        
+        # Display buttons with correct positioning
+        for i, button in enumerate(self.menuOptions):
+            button_y = 5 + i + 1
+            button_x = 5 + 1
+            button.setGlobalYX(button_y, button_x)
+            button.display(self.window, i + 1, 1)
+            
