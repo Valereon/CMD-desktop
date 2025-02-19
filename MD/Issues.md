@@ -4,8 +4,7 @@
 - the resizing of the window is weirdly offset at differnent window sizes
 - for whatever reason when resizing, when you resize to a larger size and try to resize again it offsets back to the orignal size
 - for whatever reason when you start moving stuff with the new erase() it will fuck everything up but if you do a manual refresh by pressing "r" it fixes it??? dont know wtf is happening
-
-
+- so on the context menu is working but pressing a button you cannot click you have to hold press idk i couldnt get clicking working so fix that
 
 
 

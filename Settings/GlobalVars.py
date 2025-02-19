@@ -2,6 +2,7 @@ import time
 import Settings
 
 isMouse0Pressed = False
+wasMouse0Clicked = False
 wasDoubleClicked = False
 isMouse1Pressed = False
 cursesBState = 0

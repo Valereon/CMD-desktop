@@ -18,13 +18,14 @@ from entity import Entity
 
 
 class ContextMenu(Entity):
-    def __init__(self, menuOptions, width, height, colAmount):
+    """A Configurable context menu"""
+    def __init__(self, menuOptions, width, height, colAmount, y=5,x=5):
         """
             (Button) Menu Options: The options you want for your menu
             (int) width: width of the menu
             (int) height: height of the menu
             (int) colAmount: how many columns long is the menu
-            (Internal) Style: havent implemented but will be different border types for the menu
+            (Internal) Style: haven't implemented but will be different border types for the menu
         """
         # self.menuText = menuText
         self.width = width
@@ -32,6 +33,8 @@ class ContextMenu(Entity):
         self.colAmount = colAmount
         self.style = None
         self.menuOptions = menuOptions
+        self.y = y
+        self.x = x
         self.window = curses.newwin(self.height, self.width, 5, 5)
         self.maxY, self.maxX = self.window.getmaxyx()
         super().__init__("",self.maxX,self.maxY)

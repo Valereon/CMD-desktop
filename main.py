@@ -11,6 +11,7 @@ from Windows.icon import Icon
 from Windows.contextMenu import ContextMenu
 from Settings import GlobalVars as GV
 from Utils.button import Button
+from Windows.taskbar import Taskbar
 
 timeSinceReleased = 0
 released = time.time()
@@ -33,14 +34,13 @@ def init():
     print("\033[?1003h")
 
 
-
 def main(stdscr):
     global pressed, released
 
 
     stdscr.erase()
 
-    # icon1 = Icon("Term", stdscr, 11, 10)
+    # icon1 = Icon("Term", stdscr, [".____", r"|>\  |", "|____|"], 11, 10)
     # icon2 = Icon("Term", stdscr, 11, 20)
     # icon3 = Icon("Term", stdscr, 11, 12)
     # icon4 = Icon("Term", stdscr, 15, 13)
@@ -54,27 +54,33 @@ def main(stdscr):
 
 
     
-    # button1 = Button("yo man")
-    # button2 = Button("-")
+    # button1 = Button("yo man", coolFunction)
+    # button2 = Button("")
     # button3 = Button("yman")
-    # button4 = Button("-")
+    # button4 = Button("")
     
     # options = [button1, button2, button3, button4]
     
     # menu = ContextMenu(options,15, 10, 20)
     
+    taskbar = Taskbar()
     
     while True:
-        # TODO: Refresh on a need to basis
-        # i dont think its entirely necessary to refresh on a need to basis it doesn't seem to be impacting performance
-        key = stdscr.getch() # this is the issue with the flickering bc moving the mouse calls a refresh i think
+        key = stdscr.getch() 
         stdscr.erase()
-        menu.needsRedraw = True
         stdscr.border("|", "|", "-", "-", "+", "+", "+", "+")
         desktop.update()
         windowManager.update()
-        stdscr.noutrefresh()
-        menu.update()
+        stdscr.noutrefresh() 
+        #ANYTHING THAT IS IN FRONT OF THE DESKTOP SHOULD STAGE REFRESH BELOW
+        taskbar.update()
+        
+        
+
+
+
+
+
         curses.doupdate() # ORDER MATTERS FOR screen.noutrefresh
 
         if(key == curses.KEY_MOUSE):
@@ -83,9 +89,18 @@ def main(stdscr):
                 GV.wasDoubleClicked = True
             else:
                 GV.wasDoubleClicked = False
+            
+            
             if(GV.cursesBState and curses.BUTTON2_CLICKED):
                 GV.isMouse1Pressed = True
+            else:
+                GV.isMouse1Pressed = False
+            
+            
 
+
+    
+                
         result = InputManager.keyDo(key,stdscr)
         if(result == "break"):
             break

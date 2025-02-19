@@ -13,7 +13,7 @@ class Window(Entity):
     
     when you inherit this class, your custom class will not update unless you set the self.updateMethod var to one of your own methods. This update happens after all of the window logic"""
     def __init__(self, name: str, sizeY: int, sizeX: int, resize: bool):
-        #self.id = 1  # TODO: make an id system to assign unique ids  # noqa: ERA001
+        #self.id = 1  # TODO: make an id system to assign unique ids
         self.sizeY = sizeY
         self.sizeX = sizeX
         self.finalY = sizeY
