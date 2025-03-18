@@ -11,16 +11,8 @@ class Desktop:
     def update(self):
         for i in self.icons:
             i.displayIcon()
-        self.checkIcons()
-    
-    
-    def checkIcons(self):
-        if (windowManager.focusedWindow is None):
-            self.isIconHovered(GV.mouseY,GV.mouseX)
-    
-    def isIconHovered(self, y, x):
-        for i in self.icons:
-            i.isHovered()
+            if (windowManager.focusedWindow is None):
+                i.isHovered()
         
 
 

@@ -1,8 +1,5 @@
 import curses
-from Windows import window
 from entity import Entity
-from Settings import Settings
-from Windows.windowManager import windowManager
 from Settings import GlobalVars as GV
 from Windows.desktop import desktop
 
@@ -13,8 +10,8 @@ class Icon(Entity):
         # TODO: add a way to specify icon text and look
         self.win = win
         self.name = name
-        self.programToOpen = window
-        self.programToOpenArgs = [self.name, Settings.DEFAULT_WINDOW_Y, Settings.DEFAULT_WINDOW_X, False]
+        # self.programToOpen = Window
+        # self.programToOpenArgs = [self.name, Settings.DEFAULT_WINDOW_Y, Settings.DEFAULT_WINDOW_X, False]
         self.iconText = iconText
         self.maxX = len(self.iconText[0])
         self.maxY = len(self.iconText)
@@ -22,7 +19,10 @@ class Icon(Entity):
         self.x = x
         self.y = y
         self.displayAttribute = curses.A_NORMAL
+        self.getGlobalCoordinates(self.win)
 
+    # def init(self, win):
+    #     self.getGlobalCoordinates(win)
 
     def update(self):
         """IS ONLY CALLED IF ICON IS HOVERED"""
@@ -30,7 +30,7 @@ class Icon(Entity):
         if(not self.displayAttribute == curses.A_BOLD):
             return
         
-        self.isClicked()
+        # self.isClicked()
         if(GV.isMouse0Pressed):
             if(desktop.isIconHeld == False or desktop.currentHeldIcon == self):
                 desktop.isIconHeld = True
@@ -41,21 +41,30 @@ class Icon(Entity):
             desktop.currentHeldIcon = None
         
 
+    # def openProgram(self):
+    #     if(self.programToOpen is not None):
+    #         windowManager.addWindow(self.programToOpen(*self.programToOpenArgs))
 
-    def openProgram(self):
-        if(self.programToOpen is not None):
-            windowManager.addWindow(self.programToOpen(*self.programToOpenArgs))
-
-    def isHovered(self):
-        self.update()
-        if(not self.isPointInside(GV.mouseY,GV.mouseX)):
+    def isHovered(self, useGlobal=False):
+        # this is for if the icon is being held but the mouse is not inside its bounds it wont follow it when moving
+            
+        if(desktop.currentHeldIcon == self):
+            self.update()
+        
+        if(not self.isPointInside(GV.mouseY,GV.mouseX, useGlobal)):
             self.displayAttribute = curses.A_NORMAL
             return
+
         self.displayAttribute = curses.A_BOLD
         
+        
+        self.update()
+        
     
-    def isClicked(self):
-        if(self.isPointInside(GV.mouseY,GV.mouseX) and GV.wasDoubleClicked):
+    def isClicked(self, useGlobal=False):
+        # since the icon only when hovered you dont need to check pos
+        #BUG: the mouse pressing is only long press like wtf
+        if(GV.isMouse0Pressed):    
             self.openProgram()
 
     def moveIcon(self):
@@ -65,4 +74,7 @@ class Icon(Entity):
     def displayIcon(self):
         for i in range(len(self.iconText)):
             self.win.addstr(self.y + i, self.x, self.iconText[i], self.displayAttribute)
+            
+        if(self.name == ""):
+            return
         self.win.addstr(self.y + self.maxY, self.x, self.name, self.displayAttribute)

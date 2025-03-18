@@ -32,6 +32,7 @@ def init():
     curses.nocbreak()
     curses.mousemask(curses.ALL_MOUSE_EVENTS | curses.REPORT_MOUSE_POSITION)
     print("\033[?1003h")
+    GV.stdscr = stdscr
 
 
 def main(stdscr):
@@ -44,13 +45,13 @@ def main(stdscr):
     # icon2 = Icon("Term", stdscr, 11, 20)
     # icon3 = Icon("Term", stdscr, 11, 12)
     # icon4 = Icon("Term", stdscr, 15, 13)
-    # icon5 = Icon("Term", stdscr, 10, 14)
+    icon5 = Icon("Term", stdscr, ["Balls", "Balls", "Balls"],10, 14)
     
     # desktop.icons.append(icon1)
     # desktop.icons.append(icon2)
     # desktop.icons.append(icon3)
     # desktop.icons.append(icon4)
-    # desktop.icons.append(icon5)
+    desktop.icons.append(icon5)
 
 
     
@@ -65,6 +66,14 @@ def main(stdscr):
     
     taskbar = Taskbar()
     
+    icon6 = Icon("", taskbar.window, ["CMD", "DSKTP"], 1, 1)
+    icon7 = Icon("", taskbar.window, ["INT", "ERNET"], 1, 7)   
+    
+    
+    taskbar.addIcon(icon6)
+    taskbar.addIcon(icon7)
+    
+    
     while True:
         key = stdscr.getch() 
         stdscr.erase()
@@ -74,12 +83,10 @@ def main(stdscr):
         stdscr.noutrefresh() 
         #ANYTHING THAT IS IN FRONT OF THE DESKTOP SHOULD STAGE REFRESH BELOW
         taskbar.update()
+
         
         
-
-
-
-
+        
 
         curses.doupdate() # ORDER MATTERS FOR screen.noutrefresh
 

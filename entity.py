@@ -9,7 +9,17 @@ class Entity():
         self.y = 0
         self.maxX = maxX
         self.maxY = maxY
+        #these are used to figure out the global position if the entity is in a sub window it wont report the mouse correctly
+        self.globalPosX = 0
+        self.globalPosY = 0
         
+    
+    def getGlobalCoordinates(self, win):
+        y,x = win.getbegyx()
+        self.globalPosX = self.x + x
+        self.globalPosY = self.y + y
+        
+    
     def validatePosition(self, newY, newX):
         """Turns any invalid position into a valid position"""
         if newX + self.maxX > Settings.MAX_X:
@@ -43,8 +53,14 @@ class Entity():
             if(mx <= self.x + margin and mx >= self.x):
                 return True
 
-    def isPointInside(self, my,mx):
-        if(my <= self.y + self.maxY and my >= self.y):
-            if(mx <= self.x + self.maxX and mx >= self.x):
-                return True
-        return False
+    def isPointInside(self, my,mx, useGlobal=False):
+        if(useGlobal):
+            if(my <= self.globalPosY + self.maxY and my >= self.globalPosY):
+                if(mx <= self.globalPosX + self.maxX and mx >= self.globalPosX):
+                    return True
+            return False
+        else:
+            if(my <= self.y + self.maxY and my >= self.y):
+                if(mx <= self.x + self.maxX and mx >= self.x):
+                    return True
+            return False

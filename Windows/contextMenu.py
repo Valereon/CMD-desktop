@@ -11,9 +11,6 @@
 # add some built in context menu style
 
 import curses
-import time
-from Settings import Settings
-from Utils.button import Button
 from entity import Entity
 
 

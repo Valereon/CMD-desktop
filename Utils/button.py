@@ -11,9 +11,7 @@ class Button(Entity):
         self.globalY = 0
         self.globalX = 0
         super().__init__(text, len(text), 1)
-        
-        
-        
+                
 
     def press(self, args=None):
         if(args is None):
