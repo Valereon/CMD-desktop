@@ -1,4 +1,4 @@
-from Settings import GlobalVars as GV
+from Data import GlobalVars as GV
 
 
 class WindowManager:
@@ -12,10 +12,10 @@ class WindowManager:
 
 
     def update(self):
-        for i in self.activeWindows:
-            i.update(GV.mouseY, GV.mouseX, GV.isMouse0Pressed)
+        for i in self.activeWindows:    
+            i.internalUpdate(GV.mouseY, GV.mouseX, GV.isMouse0Pressed)
         if(self.focusedWindow is not None):
-            self.focusedWindow.update(GV.mouseY, GV.mouseX, GV.isMouse0Pressed)
+            self.focusedWindow.internalUpdate(GV.mouseY, GV.mouseX, GV.isMouse0Pressed)
 
 
     def focusWindow(self, window):

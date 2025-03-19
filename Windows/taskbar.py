@@ -5,7 +5,7 @@
 # make other icons slide out of the way if one is hovering on top 
 # make them get a window that was previously put
 
-from entity import Entity
+from Components.entity import Entity
 import curses
 from Settings import Settings
 

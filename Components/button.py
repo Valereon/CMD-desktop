@@ -1,6 +1,6 @@
 import curses
-from Settings import GlobalVars as GV
-from entity import Entity
+from Data import GlobalVars as GV
+from Components.entity import Entity
 class Button(Entity):
     def __init__(self, text, func=None, highlight=curses.A_BOLD, nonHighlight=curses.A_NORMAL):
         self.text = text

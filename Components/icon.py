@@ -1,16 +1,17 @@
 import curses
-from entity import Entity
-from Settings import GlobalVars as GV
+from Components.entity import Entity
+from Data import GlobalVars as GV
 from Windows.desktop import desktop
+from Windows.windowManager import windowManager
 
 
 class Icon(Entity):
-    def __init__(self, name, win, iconText, y=10, x=10):
+    def __init__(self, name, win, iconText, programToOpen, y=10, x=10):
         # TODO: add a arg to add a programtoopen
         # TODO: add a way to specify icon text and look
         self.win = win
         self.name = name
-        # self.programToOpen = Window
+        self.programToOpen = programToOpen
         # self.programToOpenArgs = [self.name, Settings.DEFAULT_WINDOW_Y, Settings.DEFAULT_WINDOW_X, False]
         self.iconText = iconText
         self.maxX = len(self.iconText[0])
@@ -31,6 +32,10 @@ class Icon(Entity):
             return
         
         # self.isClicked()
+        if(GV.wasDoubleClicked):
+            print(GV.wasDoubleClicked)
+            self.openProgram()
+        
         if(GV.isMouse0Pressed):
             if(desktop.isIconHeld == False or desktop.currentHeldIcon == self):
                 desktop.isIconHeld = True
@@ -41,9 +46,9 @@ class Icon(Entity):
             desktop.currentHeldIcon = None
         
 
-    # def openProgram(self):
-    #     if(self.programToOpen is not None):
-    #         windowManager.addWindow(self.programToOpen(*self.programToOpenArgs))
+    def openProgram(self):
+        if(self.programToOpen is not None):
+            windowManager.addWindow(self.programToOpen())
 
     def isHovered(self, useGlobal=False):
         # this is for if the icon is being held but the mouse is not inside its bounds it wont follow it when moving

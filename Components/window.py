@@ -2,7 +2,7 @@ import curses
 import math
 import time
 
-from entity import Entity
+from Components.entity import Entity
 from Settings import Settings
 from Windows.windowManager import windowManager
 
@@ -12,7 +12,7 @@ class Window(Entity):
     
     
     when you inherit this class, your custom class will not update unless you set the self.updateMethod var to one of your own methods. This update happens after all of the window logic"""
-    def __init__(self, name: str, sizeY: int, sizeX: int, resize: bool):
+    def __init__(self, name: str, sizeY: int = 10, sizeX: int = 10, resize: bool = False):
         #self.id = 1  # TODO: make an id system to assign unique ids
         self.sizeY = sizeY
         self.sizeX = sizeX
@@ -30,11 +30,11 @@ class Window(Entity):
         self.window = curses.newwin(self.sizeY, self.sizeX, 1, 1)
         self.maxY, self.maxX = self.window.getmaxyx()
         
-        self.updateMethod = None
+        self.customUpdate = None
 
         super().__init__(name, self.maxX, self.maxY)
 
-    def update(self, my, mx, pressed):
+    def internalUpdate(self, my, mx, pressed):
         """This is the windows ticks an update every Settings.REFRESH_RATE"""
         self.window.border("|", "|", "-", "-", "+", "+","+","+")
         # self.displayWindowTitle()
@@ -51,8 +51,8 @@ class Window(Entity):
         if(self.isPointInside(my, mx) and pressed):
             windowManager.focusWindow(self)
         
-        if(self.updateMethod != None):
-            self.updateMethod()    
+        if(self.customUpdate is not None):
+            self.customUpdate()    
             
 
     def ceilCoordsNScale(self):
@@ -63,7 +63,7 @@ class Window(Entity):
         self.maxX = math.ceil(self.maxX)
         self.maxY = math.ceil(self.maxY)
 
-    def WindowCoordsToMouseCoords(self,my,mx):
+    def windowCoordsToMouseCoords(self,my,mx):
         self.y = my
         self.x = mx
 
@@ -116,7 +116,7 @@ class Window(Entity):
         if(windowManager.isWindowHeld == self):
             self.ceilCoordsNScale()
             validPositionY, validPositionX = self.validatePosition(y,x)
-            self.WindowCoordsToMouseCoords(y,x)
+            self.windowCoordsToMouseCoords(y,x)
             self.window.mvwin(validPositionY, validPositionX)
             self.isBeingHeld = True
 

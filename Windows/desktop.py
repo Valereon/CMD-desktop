@@ -1,5 +1,5 @@
 from Windows.windowManager import windowManager
-from Settings import GlobalVars as GV
+from Data import GlobalVars as GV
 
 
 class Desktop:
